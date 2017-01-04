@@ -1,15 +1,12 @@
 import functools
 from urllib.parse import urljoin, urlencode
 
-import util.json as json
-import util.http as http
-import util
 
 __all__ = (
-    'mget'
+    'build_mget'
 )
 
-async def mget(host, index, doc_type, ids, include_fields = None, exclude_fields = None):
+async def build_mget(host, index, doc_type, ids, include_fields = None, exclude_fields = None):
     if ids is None or len(ids) <= 0:
         return None, 'Invalid_Params'
     
@@ -26,16 +23,4 @@ async def mget(host, index, doc_type, ids, include_fields = None, exclude_fields
 
     body = dict(ids = ids)
 
-    (status, headers, raw), err = await http.async_request(url, 
-        method = 'POST',
-        headers = {"Transfer-Encoding":"identity"}, 
-        raw_body_func = functools.partial(json.async_convert_to_json_raw, body))
-    
-    if err is not None:
-        return None, err
-
-    result, err = parse_mget_result(status, headers, raw)
-    if err is not None:
-        return None, err
-    return result, None
-
+    return url, body

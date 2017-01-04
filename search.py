@@ -1,10 +1,6 @@
 import functools
 from urllib.parse import urljoin, urlencode
 
-import util.json as json
-import util.http as http
-import util
-
 
 __all__ = (
     'search',
@@ -76,26 +72,6 @@ class ESSearchBody(dict):
         aggs[name] = aggr
         self['aggs'] = aggs
         return self
-
-
-async def search(host, index, doc_type, params = None, body = None):
-    url = build_search_url(host, index, doc_type, params)
-    if url is None:
-        
-        return None, 'Invalid_Params'
-
-    (status, headers, raw), err = await http.async_request(url, 
-        method = 'POST', 
-        headers = {"ransfer-Encoding":"identity"}, 
-        raw_body_func = functools.partial(json.async_convert_to_json_raw, body))
-
-    if err is not None:
-        return None, err
-    
-    result, err = parse_search_result(status, headers, raw)
-    if err is not None:
-        return None, err
-    return result, None  
 
 
 def build_search_url(host, index, doc_type, params = None):

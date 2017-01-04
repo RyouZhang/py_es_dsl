@@ -1,29 +1,10 @@
 import functools
 from urllib.parse import urljoin, urlencode
 
-import util.json as json
-import util.http as http
-import util
 
 __all__ = (
-    'get_one'
+    'build_get_url'
 )
-
-async def get_one(host, index, doc_type, id, include_fields = None, exclude_fields = None):
-    url = build_get_url(host, index, doc_type, id, include_fields, exclude_fields)
-    if url is None:
-        return None, 'Invalid_Params'
-    
-    (status, headers, raw), err = await http.async_request(url)
-    if err is not None:
-        return None, err
-
-    result, err = parse_get_result(status, headers, raw)
-    if err is not None:
-        return None, err
-
-    result['id'] = id
-    return result, None
 
 
 def build_get_url(host, index, doc_type, id, include_fields = None, exclude_fields = None):
