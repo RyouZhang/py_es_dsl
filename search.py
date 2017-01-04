@@ -108,38 +108,3 @@ def build_search_url(host, index, doc_type, params = None):
         return urljoin(host, '%s/%s/_search?%s' % (index, doc_type, urlencode(params)))
     else:
         return urljoin(host, '%s/%s/_search' % (index, doc_type))
-
-
-def parse_search_result(status, headers, raw, hide_score=True):
-    if status != 200:
-        util.logger.warning('parse_search_result %s, %s', status, raw)
-        return None, 'Request_Failed'
-    try:
-        resp = json.convert_from_json_raw(raw)
-    
-        hits = resp.get('hits', None)        
-        if hits is None:
-            return None, 'Invalid_Result'
-
-        aggs = resp.get('aggregations', None)
-
-        object_array = []
-        for obj in hits.get('hits', []):
-            temp = obj['_source']
-            if len(temp) > 0:
-                if hasattr(temp, 'id') is None:
-                    temp['id'] = obj['_id']
-                if hide_score is False:
-                    temp['score'] = obj['_score']
-                object_array.append(temp)
-
-        result = dict(
-            total = hits['total'],
-            hits = object_array,
-        )
-        if aggs is not None:
-            result['aggs'] = aggs
-
-        return result, None
-    except Exception as e:
-        return None, 'Invalid_Result'

@@ -39,18 +39,3 @@ async def mget(host, index, doc_type, ids, include_fields = None, exclude_fields
         return None, err
     return result, None
 
-
-def parse_mget_result(status, headers, raw):
-    if status != 200:
-        return None, 'Request_Failed'
-    try:
-        temp = json.convert_from_json_raw(raw)
-        result = dict()
-        for index in range(len(temp['docs'])):
-            doc = temp['docs'][index]
-            doc['_source']['id'] = doc['_id']
-            result[doc['_id']] = doc['_source']
-
-        return result, None
-    except Exception as e:
-        return None, 'Invalid_Result'

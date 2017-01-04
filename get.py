@@ -39,11 +39,3 @@ def build_get_url(host, index, doc_type, id, include_fields = None, exclude_fiel
     return urljoin(host, '%s/%s/%s/_source?%s' % (index, doc_type, id, urlencode(params)))
 
 
-def parse_get_result(status, headers, raw):
-    if status != 200:
-        return None, 'Request_Failed'
-    try:
-        result = json.convert_from_json_raw(raw)
-        return result, None
-    except Exception as e:
-        return None, 'Invalid_Result'
