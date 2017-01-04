@@ -83,12 +83,14 @@ class Match(ESLeafClause):
 
 
 class MultiMatch(ESLeafClause):
+
     def __init__(self, keys, value, match_type='best_fields',ext=dict()):
         super(MultiMatch, self).__init__()
         self['multi_match'] = dict(query=value, fields=keys, type=match_type, **ext)
 
 
 class Script(ESLeafClause):
+
     def __init__(self, lang='painless', script=None, file=None, params=dict()):
         assert(lang == 'native' or lang == 'painless')
         if script is not None:
@@ -100,12 +102,14 @@ class Script(ESLeafClause):
 
 
 class ScriptScore(ESLeafClause):
+
     def __init__(self, script, lang='painless', params=dict()):
         assert(lang == 'native' or lang == 'painless')
         self['script_score'] = dict(script=dict(lang=lang, inline=script, params=params))
 
 
 class GeoDistance(ESLeafClause):
+
     def __init__(self, key, distance='5km'):
         super(GeoDistance, self).__init__()
         self._key = key
@@ -121,6 +125,7 @@ class GeoDistance(ESLeafClause):
 
 
 class GeoDistanceRange(ESLeafClause):
+
     def __init__(self, key, from_distance='0km', to_distance='50km'):
         super(GeoDistance, self).__init__()
         self._key = key
@@ -137,6 +142,7 @@ class GeoDistanceRange(ESLeafClause):
 
 
 class GeoBoundingBox(ESLeafClause):
+    
     def __init__(self, key):
         super(GeoBoundingBox, self).__init__()
         self._key = key
